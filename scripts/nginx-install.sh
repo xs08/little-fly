@@ -1,4 +1,5 @@
 # nginx 配置
+# ssl 配置，参见： https://cloud.tencent.com/developer/article/1813403
 
 # 下载安装 nginx
 install_nginx() {
@@ -27,20 +28,11 @@ install_nginx() {
 	make && make install
 }
 
-# 创建 nginx 相关目录
-mkdir_nginx_dir() {
-	mkdir -p /var/log/nginx # 日志文件
-	mkdir -p /etc/nginx # 配置文件目录
-}
-
-
 config_nginx() {
-	echo "
-[Unit]
+	# 创建服务启动文件
+	echo "[Unit]
 Description=nginx service
-After=network.target
- 
-   
+After=network.target remote-fs.target nss-lookup.target
  
 [Service]
 Type=forking
@@ -49,19 +41,46 @@ ExecReload=/usr/local/nginx/sbin/nginx -s reload
 ExecStop=/usr/local/nginx/sbin/nginx -s quit
 PrivateTmp=true
  
-   
- 
 [Install]
 WantedBy=multi-user.target
 " >> /lib/systemd/system/nginx.service
 
-# systemctl start nginx　         启动服务
+	# 添加 nginx 配置文件
+	local _tmp_nginx_file="tmp/nginx.conf"
+	cp -f $nginx_server_config_tmp $_tmp_nginx_file
+	# 根据配置，重新组装配置文件
+	# 主机域名切换
+	if [[ $HOST_NAME ]]; then
+  	sed -i "s/localhost/ $HOST_NAME" $nginx_server_config_tmp
+	fi
+	# 监听端口切换
+	if [[ $HTTP_PORT ]]; then
+		sed i "s/=80/=$HTTP_PORT" $nginx_ssl_file_pem
+	fi;
+	if [[ $HTTPS_PORT ]]; then
+		sed i "s/=443/=$HTTPS_PORT" $nginx_ssl_file_pem
+	fi;
 
-# systemctl stop nginx　         停止服务
+	# SSL 文件切换
+	if [[ $HTTPS_PORT ]] && [[
+		!-f "$nginx_ssl_file_pem_config" 
+		!-f "$nginx_ssl_file_key_config" 
+	]]; then
+		# 复制秘钥文件到指定位置
+		cp -f $nginx_ssl_file_pem_config $nginx_ssl_file_pem
+		sed i "s/=server.pem/=$nginx_ssl_file_pem" $nginx_ssl_file_pem
 
-# systemctl restart nginx　       重启服务
+		cp -f $nginx_ssl_file_key_config $nginx_ssl_file_key
+		sed i "s/=server.key/=$nginx_ssl_file_key" $nginx_ssl_file_key
 
-# systemctl status nginx   查看服务当前状态
+	else
+		echo
+		echo -e "${red}SSL${none}配置文件不存在，请确认已经添加上 ${red}SSL${none} 配置文件..."
+		echo
+		exit 1
+	fi
 
-# systemctl list-units --type=service      查看所有已启动的服务
+
+	# 添加 nginx 默认启动
+  systemctl enable v2ray
 }

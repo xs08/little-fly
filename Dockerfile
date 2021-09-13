@@ -1,5 +1,8 @@
 FROM centos:latest
 
+EXPOSE 80
+EXPOSE 443
+
 # 安装基础系统依赖
 RUN yum update -y && \
     yum install -y wget \

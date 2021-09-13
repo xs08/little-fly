@@ -2,8 +2,8 @@
 
 # http
 HOST_NAME="tonyxiong.com"
-HTTP_PORT=80
-HTTPS_PORT=443
+HTTP_PORT=5277
+HTTPS_PORT=5278
 
 # v2ray 多端口配置: 注意，端口需要大于 1024，避免系统出错
 MULTI_PORT_START=5300 # 开始端口

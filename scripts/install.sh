@@ -15,7 +15,11 @@ v2ray_client_config_tmp="${work_dir}/config-files/client-tmp.json" # 客户端�
 v2ray_client_config="/etc/v2ray/client.json" # 客户端配置脚本位置
 # nginx
 nginx_server_config_tmp="${work_dir}/config-files/nginx-tmp.conf"
-nginx_server_config="/etc/nginx/nginx.conf"
+nginx_server_config="/usr/local/nginx/conf/nginx.conf"
+nginx_ssl_file_pem_config="${work_dir}/key-files/nginx-server.pem"
+nginx_ssl_file_key_config="${work_dir}/key-files/nginx-server.key"
+nginx_ssl_file_pem="/etc/nginx/nginx-server.pem"
+nginx_ssl_file_key="/etc/nginx/nginx-server.key"
 
 # 3. 功能函数
 # 加载脚本
@@ -52,10 +56,10 @@ _load bbr-plus.sh # 使用 bbr-plus 加速
 optimizing_system # 系统加速优化
 install_bbrplus # 安装启用 bbrplus
 
-# 三、TODO: 安装配置 NGINX
+# 三、安装配置 NGINX
 _load nginx-install.sh
 install_nginx
-mkdir_nginx_dir
+config_nginx
 
 # 三、安装配置 V2RAY
 _load v2ray-install.sh
