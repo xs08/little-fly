@@ -11,8 +11,8 @@ cp -rf $(pwd)/* $work_dir
 # v2ray
 v2ray_server_config_tmp="${work_dir}/config-files/server-tmp.json" # 服务端配置模块
 v2ray_server_config="/etc/v2ray/config.json" # 服务端配置脚本位置
-v2ray_client_config_tmp="${work_dir}/config-files/client-tmp.json" # 客户端配置脚本模板
-v2ray_client_config="/etc/v2ray/client.json" # 客户端配置脚本位置
+# v2ray_client_config_tmp="${work_dir}/config-files/client-tmp.json" # 客户端配置脚本模板
+# v2ray_client_config="/etc/v2ray/client.json" # 客户端配置脚本位置
 # nginx
 nginx_server_config_tmp="${work_dir}/config-files/nginx-tmp.conf"
 nginx_server_config="/usr/local/nginx/conf/nginx.conf"
@@ -47,7 +47,6 @@ date -s "$(curl -sI g.cn | grep Date | cut -d' ' -f3-6)Z"
 _load system.sh # 加载系统配置
 open_port $HTTP_PORT # 开启 http 端口
 open_port $HTTPS_PORT # 开启 https 端口
-open_port $SHADOWSOCKET_PORT # 开启 Shadowscokets 端口
 # try_enable_bbr # 启用 bbr
 # get_ip # 获取对外 IP
 
@@ -67,5 +66,6 @@ get_latest_version
 install_v2ray
 mkdir_v2ray_dir
 compile_config_file
-open_port "multiport" $MULTI_PORT_START $MULTI_PORT_END # 打开v2ray多端口
+open_port $V2RAY_PORT # 打开v2ray端口
+# open_port "multiport" $MULTI_PORT_START $MULTI_PORT_END # 打开v2ray多端口
 

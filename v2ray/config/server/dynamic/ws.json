@@ -31,25 +31,25 @@
 				]
 			}
 		},
-        {
-            "protocol": "vmess",
-            "port": "10000-20000",
-            "tag": "dynamic",
-            "settings": {
-                "default": {
-                    "level": 1,
-                    "alterId": 32
-                }
-            },
-            "allocate": {
-                "strategy": "random",
-                "concurrency": 2,
-                "refresh": 5
-            },
-            "streamSettings": {
-                "network": "ws"
-            }
-        }
+		{
+			"protocol": "vmess",
+			"port": "10000-20000",
+			"tag": "dynamic",
+			"settings": {
+				"default": {
+					"level": 1,
+					"alterId": 32
+				}
+			},
+			"allocate": {
+				"strategy": "random",
+				"concurrency": 2,
+				"refresh": 5
+			},
+			"streamSettings": {
+				"network": "ws"
+			}
+		}
 		//include_ss
 		//include_socks
 		//include_mtproto
@@ -112,7 +112,9 @@
 			},
 			{
 				"type": "field",
-				"inboundTag": ["tg-in"],
+				"inboundTag": [
+					"tg-in"
+				],
 				"outboundTag": "tg-out"
 			}
 			//include_ban_xx
@@ -124,10 +126,10 @@
 	},
 	"transport": {
 		"kcpSettings": {
-            "uplinkCapacity": 100,
-            "downlinkCapacity": 100,
-            "congestion": true
-        },
+			"uplinkCapacity": 100,
+			"downlinkCapacity": 100,
+			"congestion": true
+		},
 		"sockopt": {
 			"tcpFastOpen": true
 		}

@@ -1,0 +1,91 @@
+{
+  "log": {
+		"access": "/var/log/v2ray/access.log",
+		"error": "/var/log/v2ray/error.log",
+		"loglevel": "warning"
+	},
+  "inbounds": [
+    // 通过 vmess 协议进入的才进行处理
+    {
+      "port": 10086, // 服务器监听端口
+      "protocol": "vmess",
+      "settings": {
+        "clients": [
+          {
+            "id": "e55c8d17-2cf3-b21a-bcf1-eeacb011ed79",
+            "alterId": 1000,
+            "level": 1
+          },
+          {
+            "id": "e55c8d17-2cf3-b21a-bcf1-eeacb011ed71",
+            "alterId": 1000,
+            "level": 2
+          }
+        ]
+      },
+      "streamSettings": {
+				"network": "ws"
+			},
+			"sniffing": {
+				"enabled": true,
+				"destOverride": [
+					"http",
+					"tls"
+				]
+			}
+    },
+    {
+			"protocol": "vmess",
+			"port": "10000-20000",
+			"tag": "dynamic",
+			"settings": {
+				"default": {
+					"level": 1,
+					"alterId": 32
+				}
+			},
+			"allocate": {
+				"strategy": "random",
+				"concurrency": 2,
+				"refresh": 5
+			},
+			"streamSettings": {
+				"network": "ws"
+			}
+		}
+  ],
+  "outbounds": [
+    // 默认直出
+    {
+      "protocol": "freedom",
+			"settings": {}
+    },
+    // 标志 direct 也直出
+    {
+			"protocol": "freedom",
+			"settings": {},
+			"tag": "direct"
+		},
+    // 标志阻塞的直接阻塞，例如广告
+    {
+			"protocol": "blackhole",
+			"settings": {},
+			"tag": "blocked"
+		},
+    // 其他输出
+    {
+			"protocol": "mtproto",
+			"settings": {},
+			"tag": "tg-out"
+		}
+  ],
+  "dns": {
+		"server": [
+			"8.8.8.8",
+			"8.8.4.4",
+			"1.1.1.1",
+			"1.0.0.1",
+			"localhost"
+		]
+	},
+}

@@ -1,0 +1,129 @@
+{
+  "log": {
+    "access": "/var/log/v2ray/access.log",
+    "error": "/var/log/v2ray/error.log",
+    "loglevel": "warning"
+  },
+  // 客户端入口流量，监听如下内容
+  "inbounds": [
+    {
+      "listen": "127.0.0.1",
+      "port": 2333,
+      "protocol": "socks",
+      "settings": {
+        "auth": "noauth",
+        "udp": true,
+        "ip": "127.0.0.1"
+      }
+    },
+    {
+      "listen": "127.0.0.1",
+      "port": 6666,
+      "protocol": "http",
+      "settings": {
+        "auth": "noauth",
+        "udp": true,
+        "ip": "127.0.0.1"
+      }
+    }
+  ],
+  "outbounds": [
+    // 匹配国内 ID 直连
+    {
+      "protocol": "freedom",
+      "settings": {},
+      "tag": "direct"
+    },
+    // 其他，未匹配也就是需要代理的部分
+    // 使用 WebSockets + Tls 代理
+    {
+      "protocol": "vmess",
+      "settings": {
+        "vnext": [
+          {
+            "address": "tonyxiong.com",
+            "port": 2333,
+            "users": [
+              {
+                "id": "e55c8d17-2cf3-b21a-bcf1-eeacb011ed79",
+                "alterId": 999,
+                "security": "auto",
+                "level": 1
+              },
+              {
+                "id": "e55c8d17-2cf3-b21a-bcf1-eeacb011ed71",
+                "alterId": 999,
+                "security": "auto",
+                "level": 2
+              }
+            ]
+          }
+        ]
+      },
+      "streamSettings": {
+        "network": "ws",
+        "security": "tls",
+        "tlsSettings": {
+          "serverName": "tonyxiong.com"
+        },
+        "wsSettings": {
+          "path": "/ws-sockets",
+          "headers": {
+            "Host": "tonyxiong.com"
+          }
+        }
+      },
+      // TCP 连接复用，看视频、下载有反效果
+      "mux": {
+        "enabled": true,
+        "concurrency": 8
+      }
+    }
+  ],
+  "dns": {
+    "servers": [
+      "8.8.8.8",
+      "8.8.4.4",
+      "localhost"
+    ]
+  },
+  "routing": {
+    "domainStrategy": "IPOnDemand",
+    "rules": [
+      // 直接连接部分
+      {
+        "type": "field",
+        "outboundTag": "direct",
+        "ip": [
+          "0.0.0.0/8",
+          "10.0.0.0/8",
+          "100.64.0.0/10",
+          "127.0.0.0/8",
+          "169.254.0.0/16",
+          "172.16.0.0/12",
+          "192.0.0.0/24",
+          "192.0.2.0/24",
+          "192.168.0.0/16",
+          "198.18.0.0/15",
+          "198.51.100.0/24",
+          "203.0.113.0/24",
+          "::1/128",
+          "fc00::/7",
+          "fe80::/10",
+          "geoip:private",
+          "geoip:cn"
+        ]
+      },
+      // 国内网站直连
+      {
+        "type": "chinasites",
+        "outboundTag": "direct"
+      },
+      // 国内 IP 直连
+      {
+        "type": "chinaip",
+        "outboundTag": "direct"
+      }
+    ]
+  }
+}

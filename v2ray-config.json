@@ -1,0 +1,95 @@
+{
+  "log": {
+    "access": "/var/log/v2ray/access.log",
+    "error": "/var/log/v2ray/error.log",
+    "loglevel": "warning"
+  },
+  "api": {},
+  "dns": {},
+  "routing": {},
+  "policy": {},
+  // 入站流量分流，主要用于客户端；服务端可同客户度端配置，因为国内流量应该不会走到此
+  "inbounds": [
+    // 模板
+    {
+      "listen": "127.0.0.1",
+      "port": 1080,
+      "protocol": "协议名称",
+      "settings": {},
+      "streamSettings": {},
+      "tag": "标识",
+      "sniffing": {
+        "enabled": true,
+        "destOverride": [
+          "http",
+          "tls"
+        ],
+        "metadataOnly": false
+      },
+      "allocate": {
+        "strategy": "always",
+        "refresh": 5,
+        "concurrency": 3
+      }
+    },
+    // 客户端配置
+    {
+      "listen": "127.0.0.1",
+      "port": 52345,
+      "protocol": "VMess",
+      "settings": {},
+      "streamSettings": {
+        // "tcp" | "kcp" | "ws" | "http" | "domainsocket" | "quic" | "grpc"
+        "network": "ws",
+        "security": "tls",
+        // 
+        "tlsSettings": {
+          "serverName": "v2ray.com",
+          "alpn": [
+            "h2",
+            "http/1.1"
+          ],
+          "allowInsecure": false,
+          "disableSystemRoot": false,
+          "certificates": [],
+          "verifyClientCertificate": false,
+          "pinnedPeerCertificateChainSha256": ""
+        },
+        "tcpSettings": {},
+        "kcpSettings": {},
+        "wsSettings": {},
+        "httpSettings": {},
+        "quicSettings": {},
+        "dsSettings": {},
+        "grpcSettings": {},
+        "sockopt": {
+          "mark": 0,
+          "tcpFastOpen": false,
+          "tproxy": "off",
+          "tcpKeepAliveInterval": 0
+        }
+      },
+      "tag": "client-in",
+      "sniffing": {
+        "enabled": true,
+        "destOverride": [
+          "http",
+          "tls"
+        ],
+        "metadataOnly": false
+      },
+      "allocate": {
+        "strategy": "always",
+        "refresh": 5,
+        "concurrency": 3
+      }
+    }
+  ],
+  "outbounds": [],
+  "transport": {},
+  "stats": {},
+  "reverse": {},
+  "fakedns": [],
+  "browserForwarder": {},
+  "observatory": {}
+}

@@ -4,6 +4,36 @@
 		"error": "/var/log/v2ray/error.log",
 		"loglevel": "warning"
 	},
+	// 入站流量分流；服务端可同客户度端配置，因为国内流量应该不会走到此
+	"routing": {
+		"domainStrategy": "AsIs",
+		"domainMatcher": "mph",
+		"balancers": [
+			{
+				"tag": "balancer",
+				"selector": [],
+				"strategy": {
+					"type": "leastPing"
+				}
+			}
+		],
+		"rules": [
+			{
+				"type": "field",
+				"ip": [
+          "geoip:private",
+				],
+				"outboundTag": "blocked"
+			},
+			{
+				"type": "field",
+				"inboundTag": [
+					"tg-in"
+				],
+				"outboundTag": "tg-out"
+			}
+		]
+	},
 	"inbounds": [
 		{
 			"port": 2333,
@@ -64,11 +94,6 @@
 				}
 			}
 		}
-		//include_ss
-		//include_socks
-		//include_mtproto
-		//include_config
-		//
 	],
 	"outbounds": [
 		{
@@ -98,42 +123,6 @@
 			"1.1.1.1",
 			"1.0.0.1",
 			"localhost"
-		]
-	},
-	"routing": {
-		"domainStrategy": "IPOnDemand",
-		"rules": [
-			{
-				"type": "field",
-				"ip": [
-					"0.0.0.0/8",
-					"10.0.0.0/8",
-					"100.64.0.0/10",
-					"127.0.0.0/8",
-					"169.254.0.0/16",
-					"172.16.0.0/12",
-					"192.0.0.0/24",
-					"192.0.2.0/24",
-					"192.168.0.0/16",
-					"198.18.0.0/15",
-					"198.51.100.0/24",
-					"203.0.113.0/24",
-					"::1/128",
-					"fc00::/7",
-					"fe80::/10"
-				],
-				"outboundTag": "blocked"
-			},
-			{
-				"type": "field",
-				"inboundTag": ["tg-in"],
-				"outboundTag": "tg-out"
-			}
-			//include_ban_xx
-			//include_ban_bt
-			//include_ban_ad
-			//include_rules
-			//
 		]
 	},
 	"transport": {

@@ -38,10 +38,11 @@ install_v2ray() {
 	cp -f "/tmp/v2ray/v2ctl" "/usr/bin/v2ray/v2ctl"
 	chmod +x "/usr/bin/v2ray/v2ctl"
 
+	# 使用 Dockerfile 指定入口，不需要此配置
   # 添加到服务并启用
-  cp -f "/tmp/v2ray/systemd/system/v2ray.service" "/lib/systemd/system/"
-  sed -i "s/on-failure/always/" /lib/systemd/system/v2ray.service
-  systemctl enable v2ray
+  # cp -f "/tmp/v2ray/systemd/system/v2ray.service" "/lib/systemd/system/"
+  # sed -i "s/on-failure/always/" /lib/systemd/system/v2ray.service
+  # systemctl enable v2ray
 }
 
 # 创建 v2ray 相关目录
@@ -57,13 +58,17 @@ compile_config_file() {
 	cp -f $v2ray_server_config_tmp $_tmp_config_file
 
 	# 动态端口配置
-	if [[ $MULTI_PORT_START && $MULTI_PORT_END ]]
-	 && [[ $MULTI_PORT_START -lt $MULTI_PORT_END ]]; then
-		# 组装端口范围
-		local _multi_port="$MULTI_PORT_START:$MULTI_PORT_END"
-		sed -i "s/10000-20000/$_multi_port/" $v2ray_server_config_tmp
-	fi
+	# if [[ $MULTI_PORT_START && $MULTI_PORT_END ]]
+	#  && [[ $MULTI_PORT_START -lt $MULTI_PORT_END ]]; then
+	# 	# 组装端口范围
+	# 	local _multi_port="$MULTI_PORT_START:$MULTI_PORT_END"
+	# 	sed -i "s/10000-20000/$_multi_port/" $v2ray_server_config_tmp
+	# fi
 
 	# 域名切换
-	if [[ $HOST_NAME ]]; then
+	# if [[ $HOST_NAME ]]; then
+
+
+
+	cp -f $_tmp_config_file $v2ray_server_config
 }

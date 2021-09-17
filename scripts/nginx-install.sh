@@ -1,5 +1,6 @@
 # nginx 配置
 # ssl 配置，参见： https://cloud.tencent.com/developer/article/1813403
+# websocket 配置，参见： https://cloud.tencent.com/developer/article/1665768
 
 # 下载安装 nginx
 install_nginx() {
@@ -24,26 +25,27 @@ install_nginx() {
 	cd $_tmp_nginx
 
 	# 编译安装
-	./configure --with-http_ssl_module
+	./configure --with-http_ssl_module --with-http_v2_module --with-stream
 	make && make install
 }
 
 config_nginx() {
+	# Dockerfile 指定启动文件，不需要 systemctl 运行
 	# 创建服务启动文件
-	echo "[Unit]
-Description=nginx service
-After=network.target remote-fs.target nss-lookup.target
- 
-[Service]
-Type=forking
-ExecStart=/usr/local/nginx/sbin/nginx
-ExecReload=/usr/local/nginx/sbin/nginx -s reload
-ExecStop=/usr/local/nginx/sbin/nginx -s quit
-PrivateTmp=true
- 
-[Install]
-WantedBy=multi-user.target
-" >> /lib/systemd/system/nginx.service
+	# 	echo "[Unit]
+	# Description=nginx service
+	# After=network.target remote-fs.target nss-lookup.target
+	
+	# [Service]
+	# Type=forking
+	# ExecStart=/usr/local/nginx/sbin/nginx
+	# ExecReload=/usr/local/nginx/sbin/nginx -s reload
+	# ExecStop=/usr/local/nginx/sbin/nginx -s quit
+	# PrivateTmp=true
+	
+	# [Install]
+	# WantedBy=multi-user.target
+	# " >> /lib/systemd/system/nginx.service
 
 	# 添加 nginx 配置文件
 	local _tmp_nginx_file="tmp/nginx.conf"
@@ -51,15 +53,21 @@ WantedBy=multi-user.target
 	# 根据配置，重新组装配置文件
 	# 主机域名切换
 	if [[ $HOST_NAME ]]; then
-  	sed -i "s/localhost/ $HOST_NAME" $nginx_server_config_tmp
+  	sed -i "s/localhost/${HOST_NAME}g" $_tmp_nginx_file
 	fi
-	# 监听端口切换
+	# nginx 监听端口切换
 	if [[ $HTTP_PORT ]]; then
-		sed i "s/=80/=$HTTP_PORT" $nginx_ssl_file_pem
+		sed i "96s/80/$HTTP_PORT/" $_tmp_nginx_file
 	fi;
 	if [[ $HTTPS_PORT ]]; then
-		sed i "s/=443/=$HTTPS_PORT" $nginx_ssl_file_pem
+		sed i "62s/443/$HTTPS_PORT/" $_tmp_nginx_file
 	fi;
+	# v2ray 上游端口切换
+	if [[ $V2RAY_PORT ]]; then
+		sed i "57s/1234/$V2RAY_PORT/" $_tmp_nginx_file
+	fi;
+	# 移动到指定位置
+	cp -f $_tmp_nginx_file $nginx_server_config
 
 	# SSL 文件切换
 	if [[ $HTTPS_PORT ]] && [[
@@ -68,19 +76,16 @@ WantedBy=multi-user.target
 	]]; then
 		# 复制秘钥文件到指定位置
 		cp -f $nginx_ssl_file_pem_config $nginx_ssl_file_pem
-		sed i "s/=server.pem/=$nginx_ssl_file_pem" $nginx_ssl_file_pem
+		sed i "s/server.pem/$nginx_ssl_file_pem/g" $nginx_ssl_file_pem
 
 		cp -f $nginx_ssl_file_key_config $nginx_ssl_file_key
-		sed i "s/=server.key/=$nginx_ssl_file_key" $nginx_ssl_file_key
-
+		sed i "s/server.key/$nginx_ssl_file_key/g" $nginx_ssl_file_key
 	else
 		echo
-		echo -e "${red}SSL${none}配置文件不存在，请确认已经添加上 ${red}SSL${none} 配置文件..."
-		echo
+		echo -e "${red}SSL${none}配置文件不存在，请确认${red}SSL配置文件${none}已经添加到${red}key-files${none}目录中"
 		exit 1
 	fi
 
-
 	# 添加 nginx 默认启动
-  systemctl enable v2ray
+  # systemctl enable v2ray
 }

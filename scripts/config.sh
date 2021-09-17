@@ -2,17 +2,11 @@
 
 # http
 HOST_NAME="tonyxiong.com"
-HTTP_PORT=5277
-HTTPS_PORT=5278
+HTTP_PORT=801 # ws 端口
+HTTPS_PORT=4431 # wss 端口
 
-# v2ray 多端口配置: 注意，端口需要大于 1024，避免系统出错
-MULTI_PORT_START=5300 # 开始端口
-MULTI_PORT_END=5400 # 结束端口
-
-# aes-128-cfb
-# aes-256-cfb
-# chacha20
-# chacha20-ietf
-# aes-128-gcm
-# aes-256-gcm
-# chacha20-ietf-poly1305
+# v2ray 端口
+V2RAY_PORT=5300
+# MULTI_PORT_START=5300 # 开始端口
+# MULTI_PORT_END=5400 # 结束端口
+V2RAY_CLIENT_ID="4b1201b1-6351-483e-9585-feb95a673c36" # 客户端随机 ID

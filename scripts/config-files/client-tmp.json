@@ -3,6 +3,46 @@
     "error": "error.log",
     "loglevel": "warning"
   },
+  "routing": {
+    "domainStrategy": "IPOnDemand",
+    "rules": [
+      {
+        "type": "field",
+        "ip": [
+          "geoip:private",
+
+          "0.0.0.0/8",
+          "10.0.0.0/8",
+          "100.64.0.0/10",
+          "127.0.0.0/8",
+          "169.254.0.0/16",
+          "172.16.0.0/12",
+          "192.0.0.0/24",
+          "192.0.2.0/24",
+          "192.168.0.0/16",
+          "198.18.0.0/15",
+          "198.51.100.0/24",
+          "203.0.113.0/24",
+          "::1/128",
+          "fc00::/7",
+          "fe80::/10",
+          "geoip:cn"
+        ],
+        "domain": [
+          "geosite:cn"
+        ],
+        "outboundTag": "direct"
+      },
+      {
+        "type": "chinasites",
+        "outboundTag": "direct"
+      },
+      {
+        "type": "chinaip",
+        "outboundTag": "direct"
+      }
+    ]
+  },
   "outbounds": [
     {
       "protocol": "vmess",
@@ -41,7 +81,52 @@
       "tag": "direct"
     }
   ],
+  // 入站流量分流，客户端据此确认是否需要走代理
   "inbounds": [
+    // 模板
+    {
+      "listen": "127.0.0.1",
+      "port": 1080,
+      "protocol": "协议名称",
+      "settings": {},
+      "streamSettings": {},
+      "tag": "标识",
+      "sniffing": {
+          "enabled": true,
+          "destOverride": [
+              "http",
+              "tls"
+          ],
+          "metadataOnly": false
+      },
+      "allocate": {
+          "strategy": "always",
+          "refresh": 5,
+          "concurrency": 3
+      }
+    },
+    // 自定义配置项
+    {
+      "listen": "127.0.0.1",
+      "port": 1080,
+      "protocol": "VMess",
+      "settings": {},
+      "streamSettings": {},
+      "tag": "browser-in",
+      "sniffing": {
+          "enabled": true,
+          "destOverride": [
+            "http",
+            "tls"
+          ],
+          "metadataOnly": false
+      },
+      "allocate": {
+          "strategy": "always",
+          "refresh": 5,
+          "concurrency": 3
+      }
+    },
     {
       "port": 2333,
       "listen": "127.0.0.1",
@@ -69,43 +154,5 @@
       "8.8.4.4",
       "localhost"
     ]
-  },
-  "routing": {
-    "domainStrategy": "IPOnDemand",
-    "rules": [
-      {
-        "type": "field",
-        "ip": [
-          "0.0.0.0/8",
-          "10.0.0.0/8",
-          "100.64.0.0/10",
-          "127.0.0.0/8",
-          "169.254.0.0/16",
-          "172.16.0.0/12",
-          "192.0.0.0/24",
-          "192.0.2.0/24",
-          "192.168.0.0/16",
-          "198.18.0.0/15",
-          "198.51.100.0/24",
-          "203.0.113.0/24",
-          "::1/128",
-          "fc00::/7",
-          "fe80::/10",
-          "geoip:cn"
-        ],
-        "domain": [
-          "geosite:cn"
-        ],
-        "outboundTag": "direct"
-      },
-      {
-        "type": "chinasites",
-        "outboundTag": "direct"
-      },
-      {
-        "type": "chinaip",
-        "outboundTag": "direct"
-      }
-    ]
-  }
+  }  
 }
