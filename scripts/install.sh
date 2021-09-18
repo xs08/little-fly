@@ -66,6 +66,6 @@ get_latest_version
 install_v2ray
 mkdir_v2ray_dir
 compile_config_file
-open_port $V2RAY_PORT # 打开v2ray端口
+open_port $V2RAY_HTTP2_PORT # 打开v2ray端口
 # open_port "multiport" $MULTI_PORT_START $MULTI_PORT_END # 打开v2ray多端口
 

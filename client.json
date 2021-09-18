@@ -4,11 +4,50 @@
     "error": "/var/log/v2ray/error.log",
     "loglevel": "warning"
   },
+  "routing": {
+    "domainStrategy": "IPOnDemand",
+    "rules": [
+      // 直接连接部分
+      {
+        "type": "field",
+        "ip": [
+          "0.0.0.0/8",
+          "10.0.0.0/8",
+          "100.64.0.0/10",
+          "127.0.0.0/8",
+          "169.254.0.0/16",
+          "172.16.0.0/12",
+          "192.0.0.0/24",
+          "192.0.2.0/24",
+          "192.168.0.0/16",
+          "198.18.0.0/15",
+          "198.51.100.0/24",
+          "203.0.113.0/24",
+          "::1/128",
+          "fc00::/7",
+          "fe80::/10",
+          "geoip:private",
+          "geoip:cn"
+        ],
+        "outboundTag": "direct"
+      },
+      // 国内网站直连
+      {
+        "type": "chinasites",
+        "outboundTag": "direct"
+      },
+      // 国内 IP 直连
+      {
+        "type": "chinaip",
+        "outboundTag": "direct"
+      }
+    ]
+  },
   // 客户端入口流量，监听如下内容
   "inbounds": [
     {
       "listen": "127.0.0.1",
-      "port": 2333,
+      "port": 2333, // 监听 socket 入口
       "protocol": "socks",
       "settings": {
         "auth": "noauth",
@@ -18,7 +57,7 @@
     },
     {
       "listen": "127.0.0.1",
-      "port": 6666,
+      "port": 6666, // 监听 http 入口
       "protocol": "http",
       "settings": {
         "auth": "noauth",
@@ -35,7 +74,7 @@
       "tag": "direct"
     },
     // 其他，未匹配也就是需要代理的部分
-    // 使用 WebSockets + Tls 代理
+    // 使用 Http2、WebSockets + Tls 代理
     {
       "protocol": "vmess",
       "settings": {
@@ -85,45 +124,6 @@
       "8.8.8.8",
       "8.8.4.4",
       "localhost"
-    ]
-  },
-  "routing": {
-    "domainStrategy": "IPOnDemand",
-    "rules": [
-      // 直接连接部分
-      {
-        "type": "field",
-        "outboundTag": "direct",
-        "ip": [
-          "0.0.0.0/8",
-          "10.0.0.0/8",
-          "100.64.0.0/10",
-          "127.0.0.0/8",
-          "169.254.0.0/16",
-          "172.16.0.0/12",
-          "192.0.0.0/24",
-          "192.0.2.0/24",
-          "192.168.0.0/16",
-          "198.18.0.0/15",
-          "198.51.100.0/24",
-          "203.0.113.0/24",
-          "::1/128",
-          "fc00::/7",
-          "fe80::/10",
-          "geoip:private",
-          "geoip:cn"
-        ]
-      },
-      // 国内网站直连
-      {
-        "type": "chinasites",
-        "outboundTag": "direct"
-      },
-      // 国内 IP 直连
-      {
-        "type": "chinaip",
-        "outboundTag": "direct"
-      }
     ]
   }
 }

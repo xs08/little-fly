@@ -63,28 +63,29 @@ config_nginx() {
 		sed i "62s/443/$HTTPS_PORT/" $_tmp_nginx_file
 	fi;
 	# v2ray 上游端口切换
-	if [[ $V2RAY_PORT ]]; then
-		sed i "57s/1234/$V2RAY_PORT/" $_tmp_nginx_file
+	if [[ $V2RAY_HTTP2_PORT ]]; then
+		sed i "57s/1234/$V2RAY_HTTP2_PORT/" $_tmp_nginx_file
 	fi;
-	# 移动到指定位置
-	cp -f $_tmp_nginx_file $nginx_server_config
 
-	# SSL 文件切换
+	# SSL 文件文件配置
 	if [[ $HTTPS_PORT ]] && [[
 		!-f "$nginx_ssl_file_pem_config" 
 		!-f "$nginx_ssl_file_key_config" 
 	]]; then
 		# 复制秘钥文件到指定位置
 		cp -f $nginx_ssl_file_pem_config $nginx_ssl_file_pem
-		sed i "s/server.pem/$nginx_ssl_file_pem/g" $nginx_ssl_file_pem
+		sed i "s/server.pem/$nginx_ssl_file_pem/g" $_tmp_nginx_file
 
 		cp -f $nginx_ssl_file_key_config $nginx_ssl_file_key
-		sed i "s/server.key/$nginx_ssl_file_key/g" $nginx_ssl_file_key
+		sed i "s/server.key/$nginx_ssl_file_key/g" $_tmp_nginx_file
 	else
 		echo
 		echo -e "${red}SSL${none}配置文件不存在，请确认${red}SSL配置文件${none}已经添加到${red}key-files${none}目录中"
 		exit 1
 	fi
+
+	# NGINX 配置文件移动到指定位置
+	cp -f $_tmp_nginx_file $nginx_server_config
 
 	# 添加 nginx 默认启动
   # systemctl enable v2ray
