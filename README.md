@@ -16,4 +16,6 @@ v2ray multiport 5300-5400;
 
 ## 配置参考
 
-v2ray.zip 内容解压进行查看
+`v2ray.tar.gz`内容解压进行查看
+版本： 3.05
+地址：[v3.05](https://github.com/233boy/v2ray/releases)
