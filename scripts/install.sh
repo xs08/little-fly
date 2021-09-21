@@ -3,7 +3,7 @@
 
 # 一、初始化阶段
 # 1. 安装脚本移动到指定目录
-work_dir="/home/xiong/v2ray-config"
+work_dir="/home/littly-fly/v2ray-config"
 mkdir -p $work_dir
 cp -rf $(pwd)/* $work_dir
 
@@ -11,20 +11,25 @@ cp -rf $(pwd)/* $work_dir
 # v2ray
 v2ray_server_config_tmp="${work_dir}/config-files/server-tmp.json" # 服务端配置模块
 v2ray_server_config="/etc/v2ray/config.json" # 服务端配置脚本位置
+# v2ray key 文件需要放置的目录，配置时使用 nginx 文件即可
+v2ray_ssl_file_crt_config="${work_dir}/key-files/server.crt"
+v2ray_ssl_file_key_config="${work_dir}/key-files/server.key"
+v2ray_ssl_file_crt="/etc/v2ray/server.crt"
+v2ray_ssl_file_key="/etc/v2ray/server.key"
 # v2ray_client_config_tmp="${work_dir}/config-files/client-tmp.json" # 客户端配置脚本模板
 # v2ray_client_config="/etc/v2ray/client.json" # 客户端配置脚本位置
 # nginx
 nginx_server_config_tmp="${work_dir}/config-files/nginx-tmp.conf"
 nginx_server_config="/usr/local/nginx/conf/nginx.conf"
-nginx_ssl_file_pem_config="${work_dir}/key-files/nginx-server.pem"
-nginx_ssl_file_key_config="${work_dir}/key-files/nginx-server.key"
-nginx_ssl_file_pem="/etc/nginx/nginx-server.pem"
-nginx_ssl_file_key="/etc/nginx/nginx-server.key"
+nginx_ssl_file_pem_config="${work_dir}/key-files/server.pem"
+nginx_ssl_file_key_config="${work_dir}/key-files/server.key"
+nginx_ssl_file_pem="/etc/nginx/server.pem"
+nginx_ssl_file_key="/etc/nginx/server.key"
 
 # 3. 功能函数
 # 加载脚本
 _load() {
-	local _dir="/home/xiong/v2ray-config/"
+	local _dir="/home/littly-fly/v2ray-config/"
 	. "${_dir}$@"
 }
 

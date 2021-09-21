@@ -52,22 +52,58 @@ mkdir_v2ray_dir() {
 }
 
 # 根据配置组装、放置配置文件
+# 需要配置内容：ssl 相关配置
+# 主机名配置：
+# 用户配置：登录用户配置
 compile_config_file() {
 	# 模板文件移动到临时文件
 	local _tmp_config_file="/tmp/v2ray.json"
 	cp -f $v2ray_server_config_tmp $_tmp_config_file
 
-	# 动态端口配置
-	# if [[ $MULTI_PORT_START && $MULTI_PORT_END ]]
-	#  && [[ $MULTI_PORT_START -lt $MULTI_PORT_END ]]; then
-	# 	# 组装端口范围
-	# 	local _multi_port="$MULTI_PORT_START:$MULTI_PORT_END"
-	# 	sed -i "s/10000-20000/$_multi_port/" $v2ray_server_config_tmp
-	# fi
+	# SSL 文件文件配置
+	if [[ $HTTPS_PORT ]] && [[
+		!-f "$v2ray_ssl_file_crt_config" 
+		!-f "$v2ray_ssl_file_key_config" 
+	]]; then
+		# 复制秘钥文件到指定位置, 然后进行路径替换
+		cp -f $v2ray_ssl_file_crt_config $v2ray_ssl_file_crt
+		sed i "s/server.crt/$v2ray_ssl_file_crt_config/g" $_tmp_config_file
+		# 复制秘钥文件到指定位置, 然后进行路径替换
+		cp -f $v2ray_ssl_file_key_config $v2ray_ssl_file_key
+		sed i "s/server.key/$v2ray_ssl_file_key_config/g" $_tmp_config_file
+	else
+		echo
+		echo -e "${red}SSL${none}配置文件不存在，请确认${red}SSL配置文件${none}已经添加到${red}key-files${none}目录中"
+		exit 1
+	fi
 
 	# 域名切换
-	# if [[ $HOST_NAME ]]; then
+	if [[ $HOST_NAME ]]; then
+  	sed -i "s/localhost/${HOST_NAME}g" $_tmp_config_file
+	fi
 
+	# 客户端用户配置
+	if [[ $CLIENT_USER_CONFIG ]]: then
+		sed -i "/\/\/include_users/r $CLIENT_USER_CONFIG" $_tmp_config_file
+		sed -i "s#//include_users#,#" $_tmp_config_file
+	fi
+
+	# 禁用路由配置
+	# 禁用广告配置
+	if [[ $BAN_AD_CONFIG ]]: then
+		sed -i "/\/\/include_ban_ad/r $BAN_AD_CONFIG" $_tmp_config_file
+		sed -i "s#//include_ban_ad#,#" $_tmp_config_file
+	fi
+	# 禁用域名配置
+	if [[ $BAN_BAN_CONFIG ]]: then
+		sed -i "/\/\/include_ban_ban/r $BAN_BAN_CONFIG" $_tmp_config_file
+		sed -i "s#//include_ban_ban#,#" $_tmp_config_file
+	fi
+	# 禁用 bt 配置
+	if [[ $BAN_BT_CONFIG ]]: then
+		sed -i "/\/\/include_ban_bt/r $BAN_BT_CONFIG" $_tmp_config_file
+		sed -i "s#//include_ban_bt#,#" $_tmp_config_file
+	fi
 
 
 	cp -f $_tmp_config_file $v2ray_server_config

@@ -1,6 +1,7 @@
 {
   "log": {
-    "error": "error.log",
+    "access": "/var/log/v2ray/access.log",
+    "error": "/var/log/v2ray/error.log",
     "loglevel": "warning"
   },
   "routing": {
@@ -9,8 +10,6 @@
       {
         "type": "field",
         "ip": [
-          "geoip:private",
-
           "0.0.0.0/8",
           "10.0.0.0/8",
           "100.64.0.0/10",
@@ -26,10 +25,8 @@
           "::1/128",
           "fc00::/7",
           "fe80::/10",
+          "geoip:private",
           "geoip:cn"
-        ],
-        "domain": [
-          "geosite:cn"
         ],
         "outboundTag": "direct"
       },
@@ -40,96 +37,17 @@
       {
         "type": "chinaip",
         "outboundTag": "direct"
-      }
+      },
+      //include_ban_xx
+			//include_ban_bt
+			//include_ban_ad
+			//include_rules
     ]
   },
-  "outbounds": [
-    {
-      "protocol": "vmess",
-      "settings": {
-        "vnext": [
-          {
-            "address": "233blog.com",
-            "port": 2333,
-            "users": [
-              {
-                "id": "e55c8d17-2cf3-b21a-bcf1-eeacb011ed79",
-                "alterId": 233,
-                "security": "auto"
-              }
-            ]
-          }
-        ]
-      },
-      "streamSettings": {
-        "network": "quic",
-        "quicSettings": {
-          "security": "aes-128-gcm",
-          "key": "",
-          "header": {
-            "type": "none"
-          }
-        }
-      },
-      "mux": {
-        "enabled": true
-      }
-    },
-    {
-      "protocol": "freedom",
-      "settings": {},
-      "tag": "direct"
-    }
-  ],
-  // 入站流量分流，客户端据此确认是否需要走代理
   "inbounds": [
-    // 模板
     {
       "listen": "127.0.0.1",
-      "port": 1080,
-      "protocol": "协议名称",
-      "settings": {},
-      "streamSettings": {},
-      "tag": "标识",
-      "sniffing": {
-          "enabled": true,
-          "destOverride": [
-              "http",
-              "tls"
-          ],
-          "metadataOnly": false
-      },
-      "allocate": {
-          "strategy": "always",
-          "refresh": 5,
-          "concurrency": 3
-      }
-    },
-    // 自定义配置项
-    {
-      "listen": "127.0.0.1",
-      "port": 1080,
-      "protocol": "VMess",
-      "settings": {},
-      "streamSettings": {},
-      "tag": "browser-in",
-      "sniffing": {
-          "enabled": true,
-          "destOverride": [
-            "http",
-            "tls"
-          ],
-          "metadataOnly": false
-      },
-      "allocate": {
-          "strategy": "always",
-          "refresh": 5,
-          "concurrency": 3
-      }
-    },
-    {
       "port": 2333,
-      "listen": "127.0.0.1",
       "protocol": "socks",
       "settings": {
         "auth": "noauth",
@@ -138,13 +56,62 @@
       }
     },
     {
-      "port": 6666,
       "listen": "127.0.0.1",
+      "port": 6666,
       "protocol": "http",
       "settings": {
         "auth": "noauth",
         "udp": true,
         "ip": "127.0.0.1"
+      }
+    }
+  ],
+  "outbounds": [
+    {
+      "protocol": "freedom",
+      "settings": {},
+      "tag": "direct"
+    },
+    {
+      "protocol": "vmess",
+      "settings": {
+        "vnext": [
+          {
+            "address": "tonyxiong.com",
+            "port": 2333,
+            "users": [
+              {
+                "id": "e55c8d17-2cf3-b21a-bcf1-eeacb011ed79",
+                "alterId": 999,
+                "security": "auto",
+                "level": 1
+              },
+              {
+                "id": "e55c8d17-2cf3-b21a-bcf1-eeacb011ed71",
+                "alterId": 999,
+                "security": "auto",
+                "level": 2
+              }
+            ]
+          }
+        ]
+      },
+      "streamSettings": {
+        "network": "ws",
+        "security": "tls",
+        "tlsSettings": {
+          "serverName": "tonyxiong.com"
+        },
+        "wsSettings": {
+          "path": "/",
+          "headers": {
+            "Host": "tonyxiong.com"
+          }
+        }
+      },
+      "mux": {
+        "enabled": true,
+        "concurrency": 8
       }
     }
   ],
@@ -154,5 +121,5 @@
       "8.8.4.4",
       "localhost"
     ]
-  }  
+  }
 }

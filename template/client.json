@@ -106,7 +106,7 @@
           "serverName": "tonyxiong.com"
         },
         "wsSettings": {
-          "path": "/ws-sockets",
+          "path": "/",
           "headers": {
             "Host": "tonyxiong.com"
           }

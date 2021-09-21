@@ -1,63 +1,78 @@
 {
-	"log": {
+  "log": {
 		"access": "/var/log/v2ray/access.log",
 		"error": "/var/log/v2ray/error.log",
 		"loglevel": "warning"
 	},
-	// 入站流量分流；服务端可同客户度端配置，因为国内流量应该不会走到此
 	"routing": {
 		"domainStrategy": "AsIs",
 		"domainMatcher": "mph",
-		"balancers": [
-			{
-				"tag": "balancer",
-				"selector": [],
-				"strategy": {
-					"type": "leastPing"
-				}
-			}
-		],
 		"rules": [
 			{
 				"type": "field",
 				"ip": [
-          "geoip:private",
+          "geoip:private"
 				],
 				"outboundTag": "blocked"
 			},
 			{
 				"type": "field",
-				"inboundTag": [
-					"tg-in"
-				],
+				"inboundTag": ["tg-in"],
 				"outboundTag": "tg-out"
-			}
+			},
+			//include_ban_bt
+			//include_ban_ban
+			//include_ban_ad
 		]
 	},
-	"inbounds": [
+  "inbounds": [
+    {
+      "port": 5300,
+      "protocol": "vmess",
+      "settings": {
+        "clients": [
+					//include_users
+        ]
+      },
+      "streamSettings": {
+				"network": "ws"
+			},
+			"sniffing": {
+				"enabled": true,
+				"destOverride": [
+					"http",
+					"tls"
+				]
+			}
+    },
 		{
-			"port": 2333,
+			"port": 5301,
 			"protocol": "vmess",
 			"settings": {
 				"clients": [
 					{
-						"id": "e55c8d17-2cf3-b21a-bcf1-eeacb011ed79",
-						"level": 1,
-						"alterId": 233
-					}
-				],
-				"detour": {
-					"to": "dynamic"
-				}
+            "id": "e55c8d17-2cf3-b21a-bcf1-eeacb011ed79",
+            "alterId": 1000,
+            "level": 1
+          }
+				]
 			},
 			"streamSettings": {
-				"network": "quic",
-				"quicSettings": {
-					"security": "aes-128-gcm",
-					"key": "",
-					"header": {
-						"type": "srtp"
-					}
+				"network": "h2",
+				"httpSettings": {
+					"host": [
+						"localhost"
+					],
+					"path": "/little-fly"
+				},
+				"security": "tls",
+				"tlsSettings": {
+					"certificates": [
+						{
+							"certificateFile": "server.crt",
+							"keyFile": "server.key"
+						}
+					]
 				}
 			},
 			"sniffing": {
@@ -67,56 +82,25 @@
 					"tls"
 				]
 			}
-		},
-		{
-			"protocol": "vmess",
-			"port": "10000-20000",
-			"tag": "dynamic",
-			"settings": {
-				"default": {
-					"level": 1,
-					"alterId": 32
-				}
-			},
-			"allocate": {
-				"strategy": "random",
-				"concurrency": 2,
-				"refresh": 5
-			},
-			"streamSettings": {
-				"network": "quic",
-				"quicSettings": {
-					"security": "aes-128-gcm",
-					"key": "",
-					"header": {
-						"type": "srtp"
-					}
-				}
-			}
 		}
-	],
-	"outbounds": [
-		{
-			"protocol": "freedom",
+  ],
+  "outbounds": [
+    {
+      "protocol": "freedom",
 			"settings": {}
-		},
-		{
-			"protocol": "blackhole",
-			"settings": {},
-			"tag": "blocked"
-		},
-		{
+    },
+    {
 			"protocol": "freedom",
 			"settings": {},
 			"tag": "direct"
 		},
-		{
-			"protocol": "mtproto",
+    {
+			"protocol": "blackhole",
 			"settings": {},
-			"tag": "tg-out"
+			"tag": "blocked"
 		}
-	],
-	"dns": {
+  ],
+  "dns": {
 		"server": [
 			"8.8.8.8",
 			"8.8.4.4",
