@@ -2,9 +2,9 @@ FROM centos:latest
 
 # 安装基础系统依赖
 RUN yum update -y && \
-    yum install -y wget \
+    yum install -y wget git && \
     # v2ray 依赖
-    yum install -y lrzsz git zip unzip curl wget qrencode libcap \
+    yum install -y lrzsz git zip unzip curl wget qrencode libcap && \
     # Nginx 依赖
     yum install -y zlib zlib-devel pcre-devel openssl openssl-devel automake autoconf libtool make gcc gcc-c++
 

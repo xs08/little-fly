@@ -56,9 +56,9 @@ open_port $HTTPS_PORT # 开启 https 端口
 # get_ip # 获取对外 IP
 
 # 4. 系统加速 使用 bbr 进行系统网络加速
-_load bbr-plus.sh # 使用 bbr-plus 加速
-optimizing_system # 系统加速优化
-install_bbrplus # 安装启用 bbrplus
+# _load bbr-plus.sh # 使用 bbr-plus 加速
+# optimizing_system # 系统加速优化
+# install_bbrplus # 安装启用 bbrplus
 
 # 三、安装配置 NGINX
 _load nginx-install.sh

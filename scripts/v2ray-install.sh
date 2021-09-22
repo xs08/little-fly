@@ -14,7 +14,7 @@ get_latest_version() {
 
 # 下载安装最新版 V2RAY
 install_v2ray() {
-	_get_latest_version
+	get_latest_version
   # 存在临时文件直接删除，创建目录保存下载内容
 	[[ -d /tmp/v2ray ]] && rm -rf /tmp/v2ray
 	mkdir -p /tmp/v2ray
@@ -53,7 +53,7 @@ mkdir_v2ray_dir() {
 
 # 根据配置组装、放置配置文件
 # 需要配置内容：ssl 相关配置
-# 主机名配置：
+# 主机名配置：hostname
 # 用户配置：登录用户配置
 compile_config_file() {
 	# 模板文件移动到临时文件

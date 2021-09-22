@@ -1,5 +1,5 @@
 # 启用 BBRPlus 加速
-# source https://github.com/ckforce/Linux-NetSpeed/blob/master/tcp.sh
+# source https://github.com/chiakge/Linux-NetSpeed
 
 # 优化 bbr 系统配置
 optimizing_system(){

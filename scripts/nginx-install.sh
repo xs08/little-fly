@@ -69,8 +69,8 @@ config_nginx() {
 
 	# SSL 文件文件配置
 	if [[ $HTTPS_PORT ]] && [[
-		!-f "$nginx_ssl_file_pem_config" 
-		!-f "$nginx_ssl_file_key_config" 
+		! -f "$nginx_ssl_file_pem_config" 
+		! -f "$nginx_ssl_file_key_config" 
 	]]; then
 		# 复制秘钥文件到指定位置
 		cp -f $nginx_ssl_file_pem_config $nginx_ssl_file_pem

@@ -45,6 +45,7 @@ echo "Step 2: Start Build Docker Image:"
 docker build . \
   -f $DOCKERFILE \
   -t $BUILD_IMG_NAME \
+  # --no-cache # 是否需要使用缓存。测试阶段不用缓存
 
 echo
 echo "Step 3: Remove Old Container:"
