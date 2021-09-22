@@ -24,6 +24,7 @@ v2ray multiport 5300-5400;
 * [nginx https 配置](https://cloud.tencent.com/developer/article/1813403)
 * [nginx websockets 配置](https://cloud.tencent.com/developer/article/1665768)
 * [linux 启用 bbr-plus](https://github.com/chiakge/Linux-NetSpeed)
+* [CentOS 8系统 开启 BBR加速/升级内核](https://zhuanlan.zhihu.com/p/210315276)
 
 ## 配置参考
 
