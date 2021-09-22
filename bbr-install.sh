@@ -4,6 +4,15 @@
 # 参考：[linux 启用 bbr-plus](https://github.com/chiakge/Linux-NetSpeed)
 # 
 
+# 安装成功提示
+success_prompt() {
+  echo "BBR 安装成功，重启系统即可验证："
+  echo "重启后执行： sysctl -n net.ipv4.tcp_congestion_control 返回 bbr"
+  echo "重启后执行： lsmod | grep bbr 返回 tcp_bbr"
+  echo "即安装且启动成功，愉快的玩耍吧:)"
+  echo
+}
+
 CENTOS_VERSION=$(cat /etc/redhat-release|sed -r 's/.* ([0-9]+)\..*/\1/') # CentOS 版本
 KERNEL_MINOR=`uname -r | awk -F . '{print $2}'` # 内核版本
 
@@ -30,12 +39,15 @@ elif [ "$KERNEL_MINOR" -ge 18 ]; then
   echo "net.core.default_qdisc=fq" >> /etc/sysctl.conf
   echo "net.ipv4.tcp_congestion_control=bbr" >> /etc/sysctl.conf
   sysctl -p
+
+  # 验证提示
+  success_prompt
 else
 # Centos8 && 内核版本大于 4.18 则直接启用
   echo "net.core.default_qdisc=fq" >> /etc/sysctl.conf
   echo "net.ipv4.tcp_congestion_control=bbr" >> /etc/sysctl.conf
   sysctl -p
+
+  # 验证提示
+  success_prompt
 fi
-
-
-
