@@ -25,6 +25,11 @@ elif [ "$KERNEL_MINOR" -ge 18 ]; then
   # 修改使用新内核启动
   dnf install grubby
   grubby --default-kernel
+
+  # 更改 bbr 参数
+  echo "net.core.default_qdisc=fq" >> /etc/sysctl.conf
+  echo "net.ipv4.tcp_congestion_control=bbr" >> /etc/sysctl.conf
+  sysctl -p
 else
 # Centos8 && 内核版本大于 4.18 则直接启用
   echo "net.core.default_qdisc=fq" >> /etc/sysctl.conf
