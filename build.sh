@@ -25,17 +25,17 @@ echo "BuildImageName: $BUILD_IMG_NAME"
 if [[ $HTTP_PORT ]]; then
   echo "Export HTTP port: $HTTP_PORT"
   if [[ $(uname) == "Darwin" ]]; then
-    gsed -i "12s/80/$HTTP_PORT/g" $DOCKERFILE
+    gsed -i "12s/EXPOSE 80/EXPOSE $HTTP_PORT/g" $DOCKERFILE
   else
-    sed -i "12s/80/$HTTP_PORT/g" $DOCKERFILE
+    sed -i "12s/EXPOSE 80/EXPOSE $HTTP_PORT/g" $DOCKERFILE
   fi
 fi
 if [[ $HTTPS_PORT ]]; then
   echo "Export HTTPS port: $HTTPS_PORT"
   if [[ $(uname) == "Darwin" ]]; then
-    gsed -i "13s/443/$HTTPS_PORT/g" $DOCKERFILE
+    gsed -i "13s/EXPOSE 443/EXPOSE $HTTPS_PORT/g" $DOCKERFILE
   else
-    sed -i "13s/443/$HTTPS_PORT/g" $DOCKERFILE
+    sed -i "13s/EXPOSE 443/EXPOSE $HTTPS_PORT/g" $DOCKERFILE
   fi
 fi
 
