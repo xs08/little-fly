@@ -1,35 +1,61 @@
 #!/bin/bash
 
 # 加载配置文件
-. "${pwd}/scripts/config.sh"
+. $(pwd)/scripts/config.sh
 
 
 # 本地变量
-DOCKERFILE="${pwd}/Dockerfile" # Dockerfile 文件
-IMAGE_NAME="little-fly" # 构建镜像名
-IMAGE_TAG="${cat /proc/sys/kernel/random/uuid | cut -c 1-8}" # 构建镜像 tag。随机ID取8位
+DOCKERFILE="$(pwd)/Dockerfile" # Dockerfile 文件
+IMAGE_NAME="littlefly" # 构建镜像名
+# IMAGE_TAG="${cat /proc/sys/kernel/random/uuid | cut -c 1-8}" # 构建镜像 tag。随机ID取8位
+IMAGE_TAG="20210922X1" # 构建镜像 tag。随机ID取8位. Mac 不支持uuid
 
-BUILD_IMG_NAME="${IMAGE_NAME}:${IMAGE_TAG}" # 调试使用动态镜像名
+# 调试使用动态镜像名
+BUILD_IMG_NAME="${IMAGE_NAME}:${IMAGE_TAG}"
+
+echo "Install Start:"
+echo
+echo "Step 1: info:"
+echo "Dockerfile: $DOCKERFILE"
+echo "ImageName: $IMAGE_NAME"
+echo "ImageTag: $IMAGE_TAG"
+echo "BuildImageName: $BUILD_IMG_NAME"
 
 # 端口透出
 if [[ $HTTP_PORT ]]; then
-  sed i "12s/80/$HTTP_PORT/" $DOCKERFILE
+  echo "Export HTTP port: $HTTP_PORT"
+  if [[ $(uname) == "Darwin" ]]; then
+    gsed -i "12s/80/$HTTP_PORT/g" $DOCKERFILE
+  else
+    sed -i "12s/80/$HTTP_PORT/g" $DOCKERFILE
+  fi
 fi
-if [[ $HTTP_PORT ]]; then
-  sed i "13s/443/$HTTP_PORT/" $DOCKERFILE
+if [[ $HTTPS_PORT ]]; then
+  echo "Export HTTPS port: $HTTPS_PORT"
+  if [[ $(uname) == "Darwin" ]]; then
+    gsed -i "13s/443/$HTTPS_PORT/g" $DOCKERFILE
+  else
+    sed -i "13s/443/$HTTPS_PORT/g" $DOCKERFILE
+  fi
 fi
 
+echo
+echo "Step 2: Start Build Docker Image:"
 # 构建 Docker 镜像
-docker build \
+docker build . \
   -f $DOCKERFILE \
-  -t $BUILD_IMG_NAME
+  -t $BUILD_IMG_NAME \
 
+echo
+echo "Step 3: Remove Old Container:"
 # 运行容器。运行前清理已有容器；没有此容器也 OK
-docker rm v2ray-server
+docker rm $(docker stop "v2ray-server")
 ## 运行容器
 
 # --privileged=true /usr/sbin/init 可运行有自启动应用容器
 # docker run --name v2ray-server -itd -p 5277:5277 -p 5278:5278 --privileged=true centos /usr/sbin/init
 
-docker run --name v2ray-server -itd -p 5277:5277 -p 5278:5278 centos 
+echo
+echo "Step 4: Start New Container:"
+docker run --name v2ray-server -itd -p 5277:5277 -p 5278:5278 $BUILD_IMG_NAME
 

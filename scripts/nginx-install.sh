@@ -8,7 +8,7 @@ install_nginx() {
 	local _tmp_nginx="/tmp/nginx"
 
 	# 存在临时文件直接删除，创建目录保存下载内容
-	[[ -d "$_tmp_nginx" ]] && rm -rf "$_tmp_nginx"
+	[[ -d "$_tmp_nginx" ]] && rm -rf $_tmp_nginx
 	mkdir -p /tmp/nginx
 
   # 下载文件路径
@@ -57,14 +57,14 @@ config_nginx() {
 	fi
 	# nginx 监听端口切换
 	if [[ $HTTP_PORT ]]; then
-		sed i "96s/80/$HTTP_PORT/" $_tmp_nginx_file
+		sed -i "96s/80/$HTTP_PORT/" $_tmp_nginx_file
 	fi;
 	if [[ $HTTPS_PORT ]]; then
-		sed i "62s/443/$HTTPS_PORT/" $_tmp_nginx_file
+		sed -i "62s/443/$HTTPS_PORT/" $_tmp_nginx_file
 	fi;
 	# v2ray 上游端口切换
 	if [[ $V2RAY_HTTP2_PORT ]]; then
-		sed i "57s/1234/$V2RAY_HTTP2_PORT/" $_tmp_nginx_file
+		sed -i "57s/1234/$V2RAY_HTTP2_PORT/" $_tmp_nginx_file
 	fi;
 
 	# SSL 文件文件配置
@@ -74,10 +74,10 @@ config_nginx() {
 	]]; then
 		# 复制秘钥文件到指定位置
 		cp -f $nginx_ssl_file_pem_config $nginx_ssl_file_pem
-		sed i "s/server.pem/$nginx_ssl_file_pem/g" $_tmp_nginx_file
+		sed -i "s/server.pem/$nginx_ssl_file_pem/g" $_tmp_nginx_file
 
 		cp -f $nginx_ssl_file_key_config $nginx_ssl_file_key
-		sed i "s/server.key/$nginx_ssl_file_key/g" $_tmp_nginx_file
+		sed -i "s/server.key/$nginx_ssl_file_key/g" $_tmp_nginx_file
 	else
 		echo
 		echo -e "${red}SSL${none}配置文件不存在，请确认${red}SSL配置文件${none}已经添加到${red}key-files${none}目录中"

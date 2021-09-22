@@ -67,10 +67,10 @@ compile_config_file() {
 	]]; then
 		# 复制秘钥文件到指定位置, 然后进行路径替换
 		cp -f $v2ray_ssl_file_crt_config $v2ray_ssl_file_crt
-		sed i "s/server.crt/$v2ray_ssl_file_crt_config/g" $_tmp_config_file
+		sed -i "s/server.crt/$v2ray_ssl_file_crt_config/g" $_tmp_config_file
 		# 复制秘钥文件到指定位置, 然后进行路径替换
 		cp -f $v2ray_ssl_file_key_config $v2ray_ssl_file_key
-		sed i "s/server.key/$v2ray_ssl_file_key_config/g" $_tmp_config_file
+		sed -i "s/server.key/$v2ray_ssl_file_key_config/g" $_tmp_config_file
 	else
 		echo
 		echo -e "${red}SSL${none}配置文件不存在，请确认${red}SSL配置文件${none}已经添加到${red}key-files${none}目录中"

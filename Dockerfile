@@ -9,8 +9,8 @@ RUN yum update -y && \
     yum install -y zlib zlib-devel pcre-devel openssl openssl-devel automake autoconf libtool make gcc gcc-c++
 
 # 端口透出
-EXPOSE 80
-EXPOSE 443
+EXPOSE 801
+EXPOSE 4431
 
 # 安装 v2ray
 COPY scripts /var/v2ray-install
