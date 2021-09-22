@@ -1,19 +1,23 @@
 FROM centos:latest
 
-EXPOSE 80
-EXPOSE 443
-
 # 安装基础系统依赖
 RUN yum update -y && \
     yum install -y wget \
-    yum install -y lrzsz git zip unzip curl wget qrencode libcap
+    # v2ray 依赖
+    yum install -y lrzsz git zip unzip curl wget qrencode libcap \
+    # Nginx 依赖
+    yum install -y zlib zlib-devel pcre-devel openssl openssl-devel automake autoconf libtool make gcc gcc-c++
+
+# 端口透出
+EXPOSE 80
+EXPOSE 443
 
 # 安装 v2ray
 COPY scripts /var/v2ray-install
 WORKDIR /var/v2ray-install
 RUN chmod +x install.sh && ./install.sh
 
-ENTRYPOINT ["bash"]
+ENTRYPOINT ["start.sh"]
 
 # FROM base_image:tag    # 引用基础镜像 *必要*
 
