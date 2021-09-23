@@ -5,8 +5,8 @@ REDIRECT_PATH="/little-fly"
 
 # http
 HOST_NAME="tonyxiong.com"
-HTTP_PORT=801 # ws 端口
-HTTPS_PORT=4431 # wss 端口
+HTTP_PORT=1320 # ws 端口
+HTTPS_PORT=4320 # wss 端口
 
 # v2ray 端口
 V2RAY_HTTP2_PORT=5300
