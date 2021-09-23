@@ -130,8 +130,4 @@ compile_config_file() {
 
 	# 配置文件放入指定位置
 	cp -f $_tmp_config_file $v2ray_server_config
-
-	echo "V2Ray 配置文件内容如下："
-	cat $v2ray_server_config
-	echo
 }
