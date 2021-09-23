@@ -50,8 +50,9 @@ date -s "$(curl -sI g.cn | grep Date | cut -d' ' -f3-6)Z"
 
 # 3. 打开必要端口
 _load system.sh # 加载系统配置
-open_port $HTTP_PORT # 开启 http 端口
-open_port $HTTPS_PORT # 开启 https 端口
+# Docker 环境不需要在此打开端口
+# open_port $HTTP_PORT # 开启 http 端口
+# open_port $HTTPS_PORT # 开启 https 端口
 # try_enable_bbr # 启用 bbr
 # get_ip # 获取对外 IP
 
@@ -71,6 +72,7 @@ get_latest_version
 install_v2ray
 mkdir_v2ray_dir
 compile_config_file
-open_port $V2RAY_HTTP2_PORT # 打开v2ray端口
+# Docker 环境不需要在此打开端口
+# open_port $V2RAY_HTTP2_PORT # 打开v2ray端口
 # open_port "multiport" $MULTI_PORT_START $MULTI_PORT_END # 打开v2ray多端口
 

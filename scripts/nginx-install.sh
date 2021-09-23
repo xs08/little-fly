@@ -23,6 +23,7 @@ install_nginx() {
 	# 解压到指定目录
 	tar -zxf $_nginx_tmp_file -C "/tmp/nginx"
 	cd $_tmp_nginx
+	echo "当前目录: $(pwd)"
 
 	# 编译安装
 	./configure --with-http_ssl_module --with-http_v2_module --with-stream
@@ -69,7 +70,8 @@ config_nginx() {
 
 	# SSL 文件文件配置
 	if [[ $HTTPS_PORT ]] && [[
-		! -f "$nginx_ssl_file_pem_config" 
+		! -f "$nginx_ssl_file_pem_config"
+	]] && [[
 		! -f "$nginx_ssl_file_key_config" 
 	]]; then
 		# 复制秘钥文件到指定位置
