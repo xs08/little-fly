@@ -24,6 +24,7 @@ install_nginx() {
 	tar -zxf $_nginx_tmp_file -C "/tmp/nginx"
 	cd $_tmp_nginx
 	echo "当前目录: $(pwd)"
+	ls -al
 
 	# 编译安装
 	./configure --with-http_ssl_module --with-http_v2_module --with-stream
