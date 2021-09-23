@@ -87,24 +87,24 @@ compile_config_file() {
 	fi
 
 	# 客户端用户配置
-	if [[ $CLIENT_USER_CONFIG ]]: then
+	if [[ $CLIENT_USER_CONFIG ]]; then
 		sed -i "/\/\/include_users/r $CLIENT_USER_CONFIG" $_tmp_config_file
 		sed -i "s#//include_users#,#" $_tmp_config_file
 	fi
 
 	# 禁用路由配置
 	# 禁用广告配置
-	if [[ $BAN_AD_CONFIG ]]: then
+	if [[ $BAN_AD_CONFIG ]]; then
 		sed -i "/\/\/include_ban_ad/r $BAN_AD_CONFIG" $_tmp_config_file
 		sed -i "s#//include_ban_ad#,#" $_tmp_config_file
 	fi
 	# 禁用域名配置
-	if [[ $BAN_BAN_CONFIG ]]: then
+	if [[ $BAN_BAN_CONFIG ]]; then
 		sed -i "/\/\/include_ban_ban/r $BAN_BAN_CONFIG" $_tmp_config_file
 		sed -i "s#//include_ban_ban#,#" $_tmp_config_file
 	fi
 	# 禁用 bt 配置
-	if [[ $BAN_BT_CONFIG ]]: then
+	if [[ $BAN_BT_CONFIG ]]; then
 		sed -i "/\/\/include_ban_bt/r $BAN_BT_CONFIG" $_tmp_config_file
 		sed -i "s#//include_ban_bt#,#" $_tmp_config_file
 	fi
