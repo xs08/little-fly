@@ -24,7 +24,7 @@ install_v2ray() {
 	local _v2ray_download_link="https://github.com/v2fly/v2ray-core/releases/download/$v2ray_latest_ver/v2ray-linux-${v2ray_bit}.zip"
 
   # 下载并检测是否成功
-	if ! wget --no-check-certificate -O "$_v2ray_tmp_file" $_v2ray_download_link; then
+	if ! wget -q --no-check-certificate -O "$_v2ray_tmp_file" $_v2ray_download_link; then
 		echo -e "$red 下载 V2Ray 失败啦..可能是你的 VPS 网络太辣鸡了...请重试...$none" && exit 1
 	fi
 
@@ -125,7 +125,6 @@ compile_config_file() {
 
 	# 检测 v2ray 配置文件是否合规：
 	echo "V2Ray 配置文件检查："
-	/usr/bin/v2ray/v2ray -test $v2ray_server_config
-	echo "OK"
+	/usr/bin/v2ray/v2ray -test="$v2ray_server_config"
 	echo
 }
