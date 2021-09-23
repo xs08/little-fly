@@ -22,15 +22,23 @@ install_nginx() {
 
 	# 解压到指定目录
 	tar -zxf $_nginx_tmp_file -C "/tmp/nginx"
-	cd $_tmp_nginx
-	echo "当前目录: $(pwd)"
-	ls -al
+	cd "$_tmp_nginx/nginx-$_nginx_version"
 
 	# 编译安装
-	./configure --with-http_ssl_module --with-http_v2_module --with-stream
+	./configure --with-http_ssl_module --prefix=/usr/local/nginx --with-http_v2_module --with-stream
 	make && make install
+
+	# 安装完成回到工作主目录
+	cd $work_dir
 }
 
+# 创建配置目录
+mkdir_nginx_dir() {
+	mkdir -p /usr/local/nginx # nginx 安装目录
+	mkdir -p /usr/local/nginx/conf # nginx 配置
+}
+
+# 添加配置
 config_nginx() {
 	# Dockerfile 指定启动文件，不需要 systemctl 运行
 	# 创建服务启动文件
@@ -50,16 +58,16 @@ config_nginx() {
 	# " >> /lib/systemd/system/nginx.service
 
 	# 添加 nginx 配置文件
-	local _tmp_nginx_file="tmp/nginx.conf"
+	local _tmp_nginx_file="/tmp/nginx.conf"
 	cp -f $nginx_server_config_tmp $_tmp_nginx_file
 	# 根据配置，重新组装配置文件
 	# 主机域名切换
 	if [[ $HOST_NAME ]]; then
-  	sed -i "s/localhost/${HOST_NAME}g" $_tmp_nginx_file
+  	sed -i "s/localhost/${HOST_NAME}/g" $_tmp_nginx_file
 	fi
 	# nginx 监听端口切换
 	if [[ $HTTP_PORT ]]; then
-		sed -i "96s/80/$HTTP_PORT/" $_tmp_nginx_file
+		sed -i "95s/80/$HTTP_PORT/" $_tmp_nginx_file
 	fi;
 	if [[ $HTTPS_PORT ]]; then
 		sed -i "62s/443/$HTTPS_PORT/" $_tmp_nginx_file
@@ -70,26 +78,36 @@ config_nginx() {
 	fi;
 
 	# SSL 文件文件配置
-	if [[ $HTTPS_PORT ]] && [[
-		! -f "$nginx_ssl_file_pem_config"
-	]] && [[
-		! -f "$nginx_ssl_file_key_config" 
-	]]; then
-		# 复制秘钥文件到指定位置
-		cp -f $nginx_ssl_file_pem_config $nginx_ssl_file_pem
-		sed -i "s/server.pem/$nginx_ssl_file_pem/g" $_tmp_nginx_file
+	if [[ $HTTPS_PORT ]]; then
+		if [[ -f "$nginx_ssl_file_pem_config" ]] && [[ -f "$nginx_ssl_file_key_config" ]]; then
+			# 复制秘钥文件到指定位置
+			# pem
+			cp -f $nginx_ssl_file_pem_config $nginx_ssl_file_pem
+			local _tmp_ssl_file_pem=$(echo ${nginx_ssl_file_pem} | sed -e"s#/#\\\/#g")
+			sed -i "66s/server.pem/${_tmp_ssl_file_pem}/" $_tmp_nginx_file
 
-		cp -f $nginx_ssl_file_key_config $nginx_ssl_file_key
-		sed -i "s/server.key/$nginx_ssl_file_key/g" $_tmp_nginx_file
-	else
-		echo
-		echo -e "${red}SSL${none}配置文件不存在，请确认${red}SSL配置文件${none}已经添加到${red}key-files${none}目录中"
-		exit 1
+			# key
+			cp -f $nginx_ssl_file_key_config $nginx_ssl_file_key
+			local _tmp_ssl_file_key=$(echo ${nginx_ssl_file_key} | sed -e"s#/#\\\/#g")
+			sed -i "67s/server\.key/${_tmp_ssl_file_key}/" $_tmp_nginx_file
+		else
+			echo
+			echo -e "${red}SSL${none}配置文件不存在，请确认${red}SSL配置文件${none}已经添加到${red}key-files${none}目录中"
+			exit 1
+		fi
 	fi
 
 	# NGINX 配置文件移动到指定位置
 	cp -f $_tmp_nginx_file $nginx_server_config
 
 	# 添加 nginx 默认启动
-  # systemctl enable v2ray
+  # systemctl enable nginx
+
+	echo "Nginx 配置文件内容如下："
+	cat $nginx_server_config
+	echo
+
+	# 检测 Nginx 配置文件是否合规
+	echo "Nginx 配置文件检查："
+	/usr/local/nginx/sbin/nginx -c $nginx_server_config
 }

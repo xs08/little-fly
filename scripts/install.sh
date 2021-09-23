@@ -43,10 +43,10 @@ _load config.sh # 加载配置文件
 yum install -y zlib zlib-devel pcre-devel openssl openssl-devel automake autoconf libtool make gcc gcc-c++ # 编译安装 nginx
 yum install -y lrzsz git zip unzip curl wget qrencode libcap # v2ray 依赖
 
-# 2. 切换系统时区
-ln -sf /usr/share/zoneinfo/Asia/Shanghai /etc/localtime
-[ -d /etc/v2ray ] && rm -rf /etc/v2ray
-date -s "$(curl -sI g.cn | grep Date | cut -d' ' -f3-6)Z"
+# 2. 切换系统时区 Docker 镜像不支持，需要系统级别切换
+# ln -sf /usr/share/zoneinfo/Asia/Shanghai /etc/localtime
+# [ -d /etc/v2ray ] && rm -rf /etc/v2ray
+# date -s "$(curl -sI g.cn | grep Date | cut -d' ' -f3-6)Z"
 
 # 3. 打开必要端口
 _load system.sh # 加载系统配置
@@ -61,8 +61,12 @@ _load system.sh # 加载系统配置
 # optimizing_system # 系统加速优化
 # install_bbrplus # 安装启用 bbrplus
 
+# 5. 创建保存 ssl 文件目录
+mkdir -p /etc/nginx
+
 # 三、安装配置 NGINX
 _load nginx-install.sh
+mkdir_nginx_dir
 install_nginx
 config_nginx
 

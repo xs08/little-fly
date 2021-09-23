@@ -10,6 +10,13 @@ IMAGE_NAME="littlefly" # 构建镜像名
 # IMAGE_TAG="${cat /proc/sys/kernel/random/uuid | cut -c 1-8}" # 构建镜像 tag。随机ID取8位
 IMAGE_TAG="20210922X1" # 构建镜像 tag。随机ID取8位. Mac 不支持uuid
 
+# 2. 切换系统时区, Linux 系统执行
+if [[ $(uname -s) == "Linux" ]]; then
+  ln -sf /usr/share/zoneinfo/Asia/Shanghai /etc/localtime
+  [ -d /etc/v2ray ] && rm -rf /etc/v2ray
+  date -s "$(curl -sI g.cn | grep Date | cut -d' ' -f3-6)Z"
+fi
+
 # 调试使用动态镜像名
 BUILD_IMG_NAME="${IMAGE_NAME}:${IMAGE_TAG}"
 
@@ -37,6 +44,13 @@ if [[ $HTTPS_PORT ]]; then
   else
     sed -i "13s/EXPOSE 443/EXPOSE $HTTPS_PORT/g" $DOCKERFILE
   fi
+fi
+
+# 开发调试使用, 添加一条系统变量，避免 Copy 阶段使用构建缓存
+if [[ $(uname) == "Darwin" ]]; then
+  gsed -i "16c ENV REFRESH_DATE=$(date '+%Y-%m-%d,%H:%M:%S')" $DOCKERFILE
+else
+  sed -i "16c ENV REFRESH_DATE=$(date '+%Y-%m-%d,%H:%M:%S')" $DOCKERFILE
 fi
 
 echo
