@@ -2,6 +2,7 @@
 
 # 获取 V2RAY 最新版本
 get_latest_version() {
+	echo "开始获取 V2Ray 版本信息："
 	v2ray_latest_ver="$(curl -H 'Cache-Control: no-cache' -s https://api.github.com/repos/v2fly/v2ray-core/releases/latest | grep 'tag_name' | cut -d\" -f4)"
 
 	if [[ ! $v2ray_latest_ver ]]; then
@@ -24,6 +25,7 @@ install_v2ray() {
 	local _v2ray_download_link="https://github.com/v2fly/v2ray-core/releases/download/$v2ray_latest_ver/v2ray-linux-${v2ray_bit}.zip"
 
   # 下载并检测是否成功
+	echo "V2Ray 文件下载中...."
 	if ! wget -q --no-check-certificate -O "$_v2ray_tmp_file" $_v2ray_download_link; then
 		echo -e "$red 下载 V2Ray 失败啦..可能是你的 VPS 网络太辣鸡了...请重试...$none" && exit 1
 	fi
@@ -125,6 +127,6 @@ compile_config_file() {
 
 	# 检测 v2ray 配置文件是否合规：
 	echo "V2Ray 配置文件检查："
-	/usr/bin/v2ray/v2ray -test="$v2ray_server_config"
+	/usr/bin/v2ray/v2ray -c $v2ray_server_config -test
 	echo
 }

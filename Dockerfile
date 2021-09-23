@@ -26,8 +26,7 @@ COPY start.sh /home/run/
 RUN chmod +x start.sh
 
 # 入口文件a
-# ENTRYPOINT ["./start.sh"]
-CMD ["bash"]
+ENTRYPOINT ["./start.sh"]
 
 # FROM base_image:tag    # 引用基础镜像 *必要*
 
