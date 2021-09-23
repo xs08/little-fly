@@ -30,14 +30,11 @@ install_v2ray() {
 		echo -e "$red 下载 V2Ray 失败啦..可能是你的 VPS 网络太辣鸡了...请重试...$none" && exit 1
 	fi
 
-  # 解压压缩包
-	unzip $_v2ray_tmp_file -d "/tmp/v2ray/"
-  
-  # 安装（复制到对应目录）
+  # 解压压缩包到安装目录
 	mkdir -p /usr/bin/v2ray
-	cp -f "/tmp/v2ray/v2ray" "/usr/bin/v2ray/v2ray"
+	unzip $_v2ray_tmp_file -d "/usr/bin/v2ray"
+	# 添加可执行权限
 	chmod +x "/usr/bin/v2ray/v2ray"
-	cp -f "/tmp/v2ray/v2ctl" "/usr/bin/v2ray/v2ctl"
 	chmod +x "/usr/bin/v2ray/v2ctl"
 
 	echo "V2Ray Installed."
