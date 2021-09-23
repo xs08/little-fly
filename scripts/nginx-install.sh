@@ -16,7 +16,7 @@ install_nginx() {
 	local _nginx_download_link="http://nginx.org/download/nginx-$_nginx_version.tar.gz"
 
 	# 下载并检测是否成功
-	if ! wget --no-check-certificate -Oq "$_nginx_tmp_file" $_nginx_download_link; then
+	if ! wget -q --no-check-certificate -O "$_nginx_tmp_file" $_nginx_download_link; then
 		echo -e "$red 下载 NGINX 失败啦..可能是你的 VPS 网络太辣鸡了...请重试...$none" && exit 1
 	fi
 

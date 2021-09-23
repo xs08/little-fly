@@ -55,7 +55,7 @@ install_bbrplus() {
 		_sys_version=`grep -oE  "[0-9.]+" /etc/issue | cut -d . -f 1`
 	fi
   # 下载安装
-  wget -Nq --no-check-certificate https://${_github}/bbrplus/centos/${_sys_version}/kernel-${_kernel_version}.rpm
+  wget -N -q --no-check-certificate https://${_github}/bbrplus/centos/${_sys_version}/kernel-${_kernel_version}.rpm
   yum install -y kernel-${_kernel_version}.rpm
   rm -f kernel-${_kernel_version}.rpm
 

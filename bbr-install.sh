@@ -18,7 +18,7 @@ KERNEL_MINOR=`uname -r | awk -F . '{print $2}'` # 内核版本
 
 if [ "$CENTOS_VERSION" -le 7 ]; then
 # Centos 8 以下系统直接使用脚本
-  wget -Nq --no-check-certificate "https://raw.githubusercontent.com/chiakge/Linux-NetSpeed/master/tcp.sh"
+  wget -N -q --no-check-certificate "https://raw.githubusercontent.com/chiakge/Linux-NetSpeed/master/tcp.sh"
   chmod +x tcp.sh
   ./tcp.sh
 elif [ "$KERNEL_MINOR" -ge 18 ]; then
