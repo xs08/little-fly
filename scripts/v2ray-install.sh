@@ -102,7 +102,9 @@ compile_config_file() {
 	# 客户端用户配置
 	if [[ $CLIENT_USER_CONFIG ]]; then
 		sed -i "/\/\/include_users/r $CLIENT_USER_CONFIG" $_tmp_config_file
-		sed -i "s#//include_users#,#" $_tmp_config_file
+		# 插入逗号用空格替代
+		# sed -i "s#//include_users#,#" $_tmp_config_file
+		sed -i "s#//include_users# #" $_tmp_config_file
 	fi
 
 	# 禁用路由配置

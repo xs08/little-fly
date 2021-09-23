@@ -30,9 +30,7 @@
       "port": 5300,
       "protocol": "vmess",
       "settings": {
-        "clients": [
-					//include_users
-        ]
+        "clients": //include_users
       },
       "streamSettings": {
 				"network": "ws"
@@ -49,9 +47,7 @@
 			"port": 5301,
 			"protocol": "vmess",
 			"settings": {
-				"clients": [
-					//include_users
-				]
+				"clients": //include_users
 			},
 			"streamSettings": {
 				"network": "h2",
