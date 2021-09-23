@@ -18,11 +18,12 @@ ENV REFRESH_DATE=2021-09-23,16:59:54
 # 安装 v2ray
 COPY scripts /var/v2ray-install
 WORKDIR /var/v2ray-install
-RUN ./install.sh
+RUN chmod +x ./install.sh && ./install.sh
 
 # 运行时主目录
 WORKDIR /home/run/
 COPY start.sh /home/run/
+RUN chmod +x start.sh
 
 # 入口文件
 ENTRYPOINT ["start.sh"]
