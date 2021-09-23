@@ -90,8 +90,6 @@ compile_config_file() {
 		fi
 	fi
 
-	echo "start HOST_NAME config"
-	echo
 	# 域名切换
 	if [[ $HOST_NAME ]]; then
   	sed -i "s/localhost/${HOST_NAME}g" $_tmp_config_file
@@ -105,23 +103,17 @@ compile_config_file() {
 		sed -i "s#//include_users#,#" $_tmp_config_file
 	fi
 
-	echo "start BAN_AD_CONFIG config"
-	echo
 	# 禁用路由配置
 	# 禁用广告配置
 	if [[ $BAN_AD_CONFIG ]]; then
 		sed -i "/\/\/include_ban_ad/r $BAN_AD_CONFIG" $_tmp_config_file
 		sed -i "s#//include_ban_ad#,#" $_tmp_config_file
 	fi
-	echo "start BAN_BAN_CONFIG config"
-	echo
 	# 禁用域名配置
 	if [[ $BAN_BAN_CONFIG ]]; then
 		sed -i "/\/\/include_ban_ban/r $BAN_BAN_CONFIG" $_tmp_config_file
 		sed -i "s#//include_ban_ban#,#" $_tmp_config_file
 	fi
-	echo "start BAN_BT_CONFIG config"
-	echo
 	# 禁用 bt 配置
 	if [[ $BAN_BT_CONFIG ]]; then
 		sed -i "/\/\/include_ban_bt/r $BAN_BT_CONFIG" $_tmp_config_file
