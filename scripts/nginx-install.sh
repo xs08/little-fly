@@ -84,7 +84,7 @@ config_nginx() {
 			# pem
 			cp -f $nginx_ssl_file_pem_config $nginx_ssl_file_pem
 			local _tmp_ssl_file_pem=$(echo ${nginx_ssl_file_pem} | sed -e"s#/#\\\/#g")
-			sed -i "66s/server.pem/${_tmp_ssl_file_pem}/" $_tmp_nginx_file
+			sed -i "66s/server\.pem/${_tmp_ssl_file_pem}/" $_tmp_nginx_file
 
 			# key
 			cp -f $nginx_ssl_file_key_config $nginx_ssl_file_key
@@ -110,4 +110,6 @@ config_nginx() {
 	# 检测 Nginx 配置文件是否合规
 	echo "Nginx 配置文件检查："
 	/usr/local/nginx/sbin/nginx -c $nginx_server_config
+	echo "OK"
+	echo
 }
