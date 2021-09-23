@@ -70,5 +70,16 @@ docker rm $(docker stop "v2ray-server")
 
 echo
 echo "Step 4: Start New Container:"
-docker run --name v2ray-server -itd -p 5277:5277 -p 5278:5278 $BUILD_IMG_NAME
 
+# 组装端口参数
+OPEN_PORT_CONFIG=""
+if [[ $HTTP_PORT ]]; then
+  echo "需要开启主机 HTTP 端口: $HTTP_PORT"
+  OPEN_PORT_CONFIG="-p $HTTP_PORT:$HTTP_PORT "
+fi
+if [[ $HTTPS_PORT ]]; then
+  echo "需要开启主机 HTTPS 端口: $HTTPS_PORT"
+  OPEN_PORT_CONFIG="$OPEN_PORT_CONFIG -p $HTTPS_PORT:$HTTPS_PORT"
+fi
+# 运行容器
+docker run --name v2ray-server -itd $OPEN_PORT_CONFIG $BUILD_IMG_NAME
