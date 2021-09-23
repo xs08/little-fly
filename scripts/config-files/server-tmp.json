@@ -19,7 +19,7 @@
 				"type": "field",
 				"inboundTag": ["tg-in"],
 				"outboundTag": "tg-out"
-			},
+			}
 			//include_ban_bt
 			//include_ban_ban
 			//include_ban_ad
@@ -50,11 +50,7 @@
 			"protocol": "vmess",
 			"settings": {
 				"clients": [
-					{
-            "id": "e55c8d17-2cf3-b21a-bcf1-eeacb011ed79",
-            "alterId": 1000,
-            "level": 1
-          }
+					//include_users
 				]
 			},
 			"streamSettings": {

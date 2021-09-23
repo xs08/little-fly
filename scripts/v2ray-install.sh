@@ -122,4 +122,10 @@ compile_config_file() {
 
 	# 配置文件放入指定位置
 	cp -f $_tmp_config_file $v2ray_server_config
+
+	# 检测 v2ray 配置文件是否合规：
+	echo "V2Ray 配置文件检查："
+	/usr/bin/v2ray/v2ray -test $v2ray_server_config
+	echo "OK"
+	echo
 }
