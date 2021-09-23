@@ -61,20 +61,24 @@ compile_config_file() {
 	cp -f $v2ray_server_config_tmp $_tmp_config_file
 
 	# SSL 文件文件配置
-	if [[ $HTTPS_PORT ]] && [[
-		!-f "$v2ray_ssl_file_crt_config" 
-		!-f "$v2ray_ssl_file_key_config" 
-	]]; then
-		# 复制秘钥文件到指定位置, 然后进行路径替换
-		cp -f $v2ray_ssl_file_crt_config $v2ray_ssl_file_crt
-		sed -i "s/server.crt/$v2ray_ssl_file_crt_config/g" $_tmp_config_file
-		# 复制秘钥文件到指定位置, 然后进行路径替换
-		cp -f $v2ray_ssl_file_key_config $v2ray_ssl_file_key
-		sed -i "s/server.key/$v2ray_ssl_file_key_config/g" $_tmp_config_file
-	else
-		echo
-		echo -e "${red}SSL${none}配置文件不存在，请确认${red}SSL配置文件${none}已经添加到${red}key-files${none}目录中"
-		exit 1
+	# SSL 文件文件配置
+	if [[ $HTTPS_PORT ]]; then
+		if [[ -f "$v2ray_ssl_file_crt_config" ]] && [[ -f "$v2ray_ssl_file_key_config" ]]; then
+			# 复制秘钥文件到指定位置
+			# pem
+			cp -f $v2ray_ssl_file_crt_config $v2ray_ssl_file_crt
+			local _tmp_ssl_file_pem=$(echo ${v2ray_ssl_file_crt} | sed -e"s#/#\\\/#g")
+			sed -i "s/server.crt/${_tmp_ssl_file_pem}g/g" $_tmp_config_file
+
+			# key
+			cp -f $v2ray_ssl_file_key_config $v2ray_ssl_file_key
+			local _tmp_ssl_file_key=$(echo ${v2ray_ssl_file_key} | sed -e"s#/#\\\/#g")
+			sed -i "s/server.key/${_tmp_ssl_file_key}/g" $_tmp_config_file
+		else
+			echo
+			echo -e "${red}SSL${none}配置文件不存在，请确认${red}SSL配置文件${none}已经添加到${red}key-files${none}目录中"
+			exit 1
+		fi
 	fi
 
 	# 域名切换
