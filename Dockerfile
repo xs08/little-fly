@@ -25,7 +25,7 @@ WORKDIR /home/run/
 COPY start.sh /home/run/
 RUN chmod +x start.sh
 
-# 入口文件a
+# 入口文件
 ENTRYPOINT ["./start.sh"]
 
 # FROM base_image:tag    # 引用基础镜像 *必要*

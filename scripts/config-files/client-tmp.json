@@ -37,7 +37,7 @@
       {
         "type": "chinaip",
         "outboundTag": "direct"
-      },
+      }
       //include_ban_xx
 			//include_ban_bt
 			//include_ban_ad
