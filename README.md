@@ -33,3 +33,13 @@ v2ray multiport 5300-5400;
 `v2ray.tar.gz`内容解压进行查看
 版本： 3.05
 地址：[v3.05](https://github.com/233boy/v2ray/releases)
+
+
+## 相关链接
+* [V2Ray 配置指南](https://github.com/ToutyRater/v2ray-guide)
+* [Docker xray image](https://hub.docker.com/r/teddysun/xray)
+* [V2RAY 基于 CADDY 的 VMESS+H2+TLS+Website(Use Host)](https://github.com/dylanbai8/V2Ray_h2-tls_Website_onekey)
+* [VLESS over TCP with XTLS + 回落 & 分流 to WHATEVER（终极配置）](https://github.com/XTLS/Xray-examples/tree/main/VLESS-TCP-XTLS-WHATEVER)
+* [V2rayU Client](https://github.com/yanue/V2rayU/blob/master/README.md#%E5%BD%BB%E5%BA%95%E5%8D%B8%E8%BD%BD)
+* [v2ray-examples](https://github.com/v2fly/v2ray-examples)
+* [Project X - Xray-core](https://github.com/XTLS/Xray-core)
